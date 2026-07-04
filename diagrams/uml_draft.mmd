@@ -1,0 +1,58 @@
+classDiagram
+
+class Owner {
+    +String name
+    +int available_minutes
+    +datetime preferred_start_time
+    +List~Pet~ pets
+    +add_pet(pet)
+}
+
+class Pet {
+    +String name
+    +String species
+    +String breed
+    +int age
+    +String food_preference
+    +List~CareTask~ care_tasks
+    +add_task(task)
+}
+
+class CareTask {
+    +String title
+    +String category
+    +int duration_minutes
+    +String priority
+    +String notes
+    +bool recurring
+    +priority_score()
+}
+
+class Scheduler {
+    +generate_plan(owner, pet) DailyPlan
+    -sort_tasks(tasks)
+    -can_fit(task, remaining_minutes)
+}
+
+class DailyPlan {
+    +Owner owner
+    +Pet pet
+    +List~ScheduledTask~ scheduled_tasks
+    +List~CareTask~ skipped_tasks
+    +List~String~ explanations
+    +summary()
+}
+
+class ScheduledTask {
+    +CareTask task
+    +datetime start_time
+    +datetime end_time
+    +display()
+}
+
+Owner "1" --> "0..*" Pet : owns
+Pet "1" --> "0..*" CareTask : has
+Scheduler --> DailyPlan : creates
+DailyPlan "1" --> "0..*" ScheduledTask : contains
+DailyPlan "1" --> "0..*" CareTask : skips
+ScheduledTask "1" --> "1" CareTask : schedules
