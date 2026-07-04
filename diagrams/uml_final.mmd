@@ -1,0 +1,73 @@
+classDiagram
+
+class Task {
+    +String title
+    +String time
+    +int duration_minutes
+    +String frequency
+    +String priority
+    +String category
+    +String notes
+    +bool completed
+    +bool recurrence_handled
+    +priority_score() int
+    +mark_complete()
+    +is_complete() bool
+    +display() String
+    +next_occurrence() Task
+}
+
+class Pet {
+    +String name
+    +String species
+    +String breed
+    +int age
+    +String food_preference
+    +String notes
+    +List~Task~ tasks
+    +add_task(task)
+    +remove_task(title) bool
+    +get_tasks() List~Task~
+}
+
+class Owner {
+    +String name
+    +List~Pet~ pets
+    +String preferences
+    +String daily_start_time
+    +add_pet(pet)
+    +remove_pet(pet_name) bool
+    +get_pet(pet_name) Pet
+    +get_all_tasks() List~Tuple~
+}
+
+class Scheduler {
+    +get_all_tasks(owner) List~Tuple~
+    +sort_by_time(entries) List~Tuple~
+    +sort_by_priority_then_time(entries) List~Tuple~
+    +filter_tasks(entries, pet_name, completed) List~Tuple~
+    +detect_conflicts(entries) List~String~
+    +handle_recurring_task(task) Task
+    +generate_schedule(owner, pet_name, include_completed) Schedule
+}
+
+class Schedule {
+    +Owner owner
+    +List~ScheduleEntry~ entries
+    +List~String~ conflicts
+    +List~String~ recurring_updates
+    +by_pet() Dict
+}
+
+class ScheduleEntry {
+    +Pet pet
+    +Task task
+    +display() String
+}
+
+Owner "1" --> "0..*" Pet : owns
+Pet "1" --> "0..*" Task : has
+Scheduler --> Schedule : creates
+Schedule "1" --> "0..*" ScheduleEntry : contains
+ScheduleEntry "1" --> "1" Pet : references
+ScheduleEntry "1" --> "1" Task : references
